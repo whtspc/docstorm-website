@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DocStorm - Any Document to Any Salesforce Record</title>
+  <meta name="description" content="Transform any document into Salesforce records in seconds. PDFs, images, emails, Excel - no code required. AI-powered extraction with easy configuration.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --text-primary: #191919;
+      --text-secondary: #5a5a5a;
+      --text-tertiary: #8a8a8a;
+      --bg-primary: #ffffff;
+      --bg-secondary: #fafafa;
+      --border: #ebebeb;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 16px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--text-primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #333;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-secondary);
+      border-color: #ddd;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 140px 32px 100px;
+      text-align: center;
+    }
+
+    .hero-portal {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      margin-bottom: 48px;
+      cursor: pointer;
+    }
+
+    .hero-portal canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      max-width: 700px;
+    }
+
+    .hero p {
+      font-size: clamp(17px, 2vw, 19px);
+      color: var(--text-secondary);
+      max-width: 520px;
+      margin-bottom: 36px;
+      line-height: 1.6;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .hero-cta .btn {
+      padding: 14px 28px;
+      font-size: 15px;
+    }
+
+    /* Supported Formats */
+    .formats {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 72px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+    }
+
+    .format-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+    }
+
+    .format-icon {
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.6;
+    }
+
+    /* Section Styles */
+    section {
+      padding: 120px 32px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 72px;
+    }
+
+    .section-header h2 {
+      font-size: clamp(28px, 3.5vw, 40px);
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .section-header p {
+      font-size: 17px;
+      color: var(--text-secondary);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* Features Section */
+    .features {
+      background: var(--bg-secondary);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--bg-primary);
+      padding: 32px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--bg-secondary);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* How It Works */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 48px;
+    }
+
+    .step {
+      text-align: center;
+    }
+
+    .step-number {
+      width: 48px;
+      height: 48px;
+      background: var(--text-primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 auto 24px;
+    }
+
+    .step h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .step p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
+    /* Use Cases */
+    .use-cases {
+      background: var(--bg-secondary);
+    }
+
+    .use-cases-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+    }
+
+    .use-case {
+      background: var(--bg-primary);
+      padding: 24px 20px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .use-case-sector {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-tertiary);
+      margin-bottom: 6px;
+    }
+
+    .use-case-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    /* Pricing Section */
+    .pricing {
+      text-align: center;
+    }
+
+    .pricing-card {
+      max-width: 420px;
+      margin: 0 auto;
+      background: var(--bg-primary);
+      border: 2px solid var(--text-primary);
+      border-radius: 16px;
+      padding: 48px 40px;
+    }
+
+    .pricing-card h3 {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-tertiary);
+      margin-bottom: 16px;
+    }
+
+    .pricing-amount {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -2px;
+      margin-bottom: 8px;
+    }
+
+    .pricing-period {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+
+    .pricing-features {
+      list-style: none;
+      margin-bottom: 32px;
+    }
+
+    .pricing-features li {
+      font-size: 15px;
+      color: var(--text-secondary);
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pricing-features li:last-child {
+      border-bottom: none;
+    }
+
+    .pricing-card .btn {
+      width: 100%;
+      padding: 16px;
+      font-size: 15px;
+    }
+
+    /* CTA Section */
+    .cta {
+      text-align: center;
+      background: var(--bg-secondary);
+    }
+
+    .cta h2 {
+      font-size: clamp(28px, 3.5vw, 40px);
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .cta p {
+      font-size: 17px;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      max-width: 460px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta .btn {
+      padding: 16px 32px;
+      font-size: 15px;
+    }
+
+    /* Footer */
+    footer {
+      padding: 40px 48px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .footer-logo {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 32px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .footer-tagline {
+      font-size: 13px;
+      color: var(--text-tertiary);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav {
+        padding: 14px 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding: 120px 20px 80px;
+      }
+
+      .hero-portal {
+        width: 150px;
+        height: 150px;
+      }
+
+      section {
+        padding: 80px 20px;
+      }
+
+      .formats {
+        gap: 20px;
+      }
+
+      .pricing-card {
+        padding: 36px 28px;
+      }
+
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .footer-links {
+        gap: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <a href="#" class="logo">DocStorm</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" class="btn btn-primary">Get Started</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-portal" id="portal"></div>
+    <h1>Any document. Any Salesforce record. Seconds.</h1>
+    <p>Drop documents into the vortex. AI extracts the data. Records appear in Salesforce. Configure once in minutes, no code required.</p>
+    <div class="hero-cta">
+      <a href="#" class="btn btn-primary">Get Started</a>
+      <a href="#how-it-works" class="btn btn-secondary">See how it works</a>
+    </div>
+    <div class="formats">
+      <div class="format-item">
+        <div class="format-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+        </div>
+        PDF
+      </div>
+      <div class="format-item">
+        <div class="format-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+        </div>
+        Images
+      </div>
+      <div class="format-item">
+        <div class="format-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        Email
+      </div>
+      <div class="format-item">
+        <div class="format-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+        </div>
+        Text
+      </div>
+      <div class="format-item">
+        <div class="format-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <line x1="3" y1="9" x2="21" y2="9"/>
+            <line x1="3" y1="15" x2="21" y2="15"/>
+            <line x1="9" y1="3" x2="9" y2="21"/>
+            <line x1="15" y1="3" x2="15" y2="21"/>
+          </svg>
+        </div>
+        Excel
+      </div>
+      <div class="format-item">
+        <div class="format-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <line x1="10" y1="9" x2="8" y2="9"/>
+          </svg>
+        </div>
+        Word
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-header">
+        <h2>Everything you need</h2>
+        <p>Powerful features that make document processing effortless</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2a10 10 0 1 0 10 10H12V2z"/>
+              <path d="M12 2a10 10 0 0 1 10 10"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+          <h3>AI-Powered Extraction</h3>
+          <p>Einstein AI automatically identifies and extracts structured data from any document with high accuracy.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <h3>Quick & Easy Setup</h3>
+          <p>Configure extraction mappings in minutes through an intuitive wizard. No programming required.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="8.5" cy="7" r="4"/>
+              <line x1="20" y1="8" x2="20" y2="14"/>
+              <line x1="23" y1="11" x2="17" y2="11"/>
+            </svg>
+          </div>
+          <h3>Smart Duplicate Detection</h3>
+          <p>Prevent duplicate records with exact and fuzzy matching using intelligent algorithms.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+              <polyline points="2 17 12 22 22 17"/>
+              <polyline points="2 12 12 17 22 12"/>
+            </svg>
+          </div>
+          <h3>Hierarchical Records</h3>
+          <p>Create parent and child records in one workflow. Perfect for Accounts with Contacts or Orders with Line Items.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+              <line x1="12" y1="22.08" x2="12" y2="12"/>
+            </svg>
+          </div>
+          <h3>Native Salesforce</h3>
+          <p>Built entirely on the Salesforce platform. No external systems, no data leaving your org.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </div>
+          <h3>Type-Safe Conversion</h3>
+          <p>Automatic conversion to correct Salesforce field types: dates, currencies, picklists, and more.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <h2>How it works</h2>
+        <p>Three simple steps to transform your workflow</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Configure once</h3>
+          <p>Set up extraction mappings in minutes using the no-code wizard. Map document fields to Salesforce objects.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Drop any document</h3>
+          <p>Drag and drop documents into the vortex. PDFs, images, emails, text files all work seamlessly.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Records created</h3>
+          <p>AI extracts data and creates Salesforce records instantly. Review the results and save.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Use Cases -->
+  <section class="use-cases" id="use-cases">
+    <div class="container">
+      <div class="section-header">
+        <h2>Built for every industry</h2>
+        <p>See how teams across different sectors use DocStorm</p>
+      </div>
+      <div class="use-cases-grid">
+        <div class="use-case">
+          <div class="use-case-sector">Insurance</div>
+          <div class="use-case-title">Policies & Claims</div>
+        </div>
+        <div class="use-case">
+          <div class="use-case-sector">Legal</div>
+          <div class="use-case-title">Contracts</div>
+        </div>
+        <div class="use-case">
+          <div class="use-case-sector">HR</div>
+          <div class="use-case-title">CVs & Resumes</div>
+        </div>
+        <div class="use-case">
+          <div class="use-case-sector">Finance</div>
+          <div class="use-case-title">Invoices</div>
+        </div>
+        <div class="use-case">
+          <div class="use-case-sector">Healthcare</div>
+          <div class="use-case-title">Patient Forms</div>
+        </div>
+        <div class="use-case">
+          <div class="use-case-sector">Sales</div>
+          <div class="use-case-title">Quotes & Orders</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <div class="section-header">
+        <h2>Simple pricing</h2>
+        <p>One plan, everything included</p>
+      </div>
+      <div class="pricing-card">
+        <h3>Annual License</h3>
+        <div class="pricing-amount">$5,000</div>
+        <div class="pricing-period">per year</div>
+        <ul class="pricing-features">
+          <li>Unlimited configurations</li>
+          <li>All document types supported</li>
+          <li>Parent & child record creation</li>
+          <li>Smart duplicate detection</li>
+          <li>Full Einstein AI integration</li>
+        </ul>
+        <a href="#" class="btn btn-primary">Get Started</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta">
+    <div class="container">
+      <h2>Ready to transform your workflow?</h2>
+      <p>Start processing documents in seconds. Any document to any Salesforce record.</p>
+      <a href="#" class="btn btn-primary">Get Started</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-logo">DocStorm</div>
+      <div class="footer-links">
+        <a href="#">AppExchange</a>
+        <a href="#">Documentation</a>
+        <a href="#">Support</a>
+      </div>
+      <div class="footer-tagline">Built on Salesforce. Powered by Einstein AI.</div>
+    </div>
+  </footer>
+
+  <!-- Vortex Animation Script -->
+  <script>
+    class MiniPortal {
+      constructor(container) {
+        this.container = container;
+        this.canvas = document.createElement('canvas');
+        this.container.appendChild(this.canvas);
+        this.ctx = this.canvas.getContext('2d');
+
+        this.dpr = window.devicePixelRatio || 1;
+        this.size = 180;
+        this.canvas.width = this.size * this.dpr;
+        this.canvas.height = this.size * this.dpr;
+        this.ctx.scale(this.dpr, this.dpr);
+
+        this.centerX = this.size / 2;
+        this.centerY = this.size / 2;
+
+        this.intensity = 0;
+        this.targetIntensity = 0;
+        this.time = 0;
+        this.frameCount = 0;
+
+        this.coreDocCount = 22;
+        this.extraDocCount = 20;
+        this.docs = [];
+
+        this.speedLines = [];
+        this.maxSpeedLines = 12;
+
+        this.initDocs();
+        this.initSpeedLines();
+        this.bindEvents();
+        this.animate();
+      }
+
+      initDocs() {
+        for (let i = 0; i < this.coreDocCount; i++) {
+          const baseAngle = (i / this.coreDocCount) * Math.PI * 2;
+          const openRadius = 62 + Math.random() * 12;
+          const openSpeed = 0.025 + Math.random() * 0.025;
+          const openAlpha = 0.25 + Math.random() * 0.45;
+
+          this.docs.push({
+            baseAngle: baseAngle,
+            angle: Math.random() * Math.PI * 2,
+            radius: 10 + Math.random() * 22,
+            spinSpeed: (0.5 + Math.random() * 2) * (Math.random() > 0.5 ? 1 : -1),
+            chaosAlpha: 0.2 + Math.random() * 0.5,
+            scale: 0.6 + Math.random() * 0.5,
+            openRadius: openRadius,
+            openSpeed: openSpeed,
+            openAlpha: openAlpha,
+            isExtra: false
+          });
+        }
+
+        for (let i = 0; i < this.extraDocCount; i++) {
+          const baseAngle = Math.random() * Math.PI * 2;
+          const openRadius = 56 + Math.random() * 16;
+          const openSpeed = 0.025 + Math.random() * 0.025;
+          const openAlpha = 0.15 + Math.random() * 0.5;
+
+          this.docs.push({
+            baseAngle: baseAngle,
+            angle: Math.random() * Math.PI * 2,
+            radius: 6 + Math.random() * 16,
+            spinSpeed: (0.5 + Math.random() * 2) * (Math.random() > 0.5 ? 1 : -1),
+            chaosAlpha: 0,
+            scale: 0.5 + Math.random() * 0.6,
+            openRadius: openRadius,
+            openSpeed: openSpeed,
+            openAlpha: openAlpha,
+            isExtra: true
+          });
+        }
+      }
+
+      initSpeedLines() {
+        for (let i = 0; i < this.maxSpeedLines; i++) {
+          this.speedLines.push(this.createSpeedLine());
+        }
+      }
+
+      createSpeedLine() {
+        return {
+          angle: Math.random() * Math.PI * 2,
+          radius: 28 + Math.random() * 40,
+          length: 0.3 + Math.random() * 0.5,
+          speed: 0.04 + Math.random() * 0.04,
+          alpha: 0,
+          targetAlpha: 0.1 + Math.random() * 0.25,
+          life: 0,
+          maxLife: 30 + Math.random() * 60,
+          thickness: 0.5 + Math.random() * 1.5
+        };
+      }
+
+      bindEvents() {
+        this.container.addEventListener('mouseenter', () => this.targetIntensity = 1);
+        this.container.addEventListener('mouseleave', () => this.targetIntensity = 0);
+      }
+
+      drawDocument(x, y, angle, alpha, scale = 1) {
+        if (alpha < 0.01) return;
+
+        const ctx = this.ctx;
+        const w = 8 * scale;
+        const h = 11 * scale;
+        const fold = 2.2 * scale;
+
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+
+        ctx.beginPath();
+        ctx.moveTo(-w/2, -h/2);
+        ctx.lineTo(w/2 - fold, -h/2);
+        ctx.lineTo(w/2, -h/2 + fold);
+        ctx.lineTo(w/2, h/2);
+        ctx.lineTo(-w/2, h/2);
+        ctx.closePath();
+
+        ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(w/2 - fold, -h/2);
+        ctx.lineTo(w/2 - fold, -h/2 + fold);
+        ctx.lineTo(w/2, -h/2 + fold);
+        ctx.closePath();
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.5})`;
+        ctx.fill();
+
+        ctx.restore();
+      }
+
+      drawSpeedLines() {
+        const ctx = this.ctx;
+
+        for (let line of this.speedLines) {
+          if (this.intensity < 0.3) {
+            line.alpha *= 0.9;
+            continue;
+          }
+
+          line.life++;
+
+          const lifeRatio = line.life / line.maxLife;
+          if (lifeRatio < 0.2) {
+            line.alpha += (line.targetAlpha - line.alpha) * 0.2;
+          } else if (lifeRatio > 0.7) {
+            line.alpha *= 0.95;
+          }
+
+          line.angle += line.speed;
+
+          if (line.life > line.maxLife) {
+            Object.assign(line, this.createSpeedLine());
+            line.life = 0;
+          }
+
+          if (line.alpha > 0.01) {
+            ctx.beginPath();
+            ctx.arc(this.centerX, this.centerY, line.radius, line.angle, line.angle + line.length);
+            ctx.strokeStyle = `rgba(0, 0, 0, ${line.alpha * this.intensity})`;
+            ctx.lineWidth = line.thickness;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+          }
+        }
+      }
+
+      drawWhirlwindParticles() {
+        if (this.intensity < 0.3) return;
+
+        const ctx = this.ctx;
+        const particleCount = 8;
+
+        for (let i = 0; i < particleCount; i++) {
+          const angle = (this.time * 0.05 + i * Math.PI * 2 / particleCount);
+          const radiusWobble = Math.sin(this.time * 0.1 + i) * 5;
+          const radius = 35 + radiusWobble + i * 3.5;
+
+          const x = this.centerX + Math.cos(angle) * radius;
+          const y = this.centerY + Math.sin(angle) * radius;
+
+          const alpha = (0.1 + Math.sin(this.time * 0.08 + i) * 0.1) * this.intensity;
+          const size = 1.1 + Math.sin(this.time * 0.1 + i * 2) * 0.5;
+
+          ctx.beginPath();
+          ctx.arc(x, y, size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+          ctx.fill();
+        }
+      }
+
+      shouldRenderFrame() {
+        this.frameCount++;
+        // Always render at 30fps (every 2nd frame of 60fps)
+        return this.frameCount % 2 === 0;
+      }
+
+      animate() {
+        this.intensity += (this.targetIntensity - this.intensity) * 0.15;
+
+        if (!this.shouldRenderFrame()) {
+          requestAnimationFrame(() => this.animate());
+          return;
+        }
+
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillRect(0, 0, this.size, this.size);
+
+        this.drawSpeedLines();
+        this.drawWhirlwindParticles();
+
+        const isIdle = this.intensity < 0.1 && this.targetIntensity === 0;
+        const speedMultiplier = isIdle ? 4 : 2;
+        const chaosSpeed = 0.02 * speedMultiplier;
+
+        for (let i = 0; i < this.docs.length; i++) {
+          const doc = this.docs[i];
+
+          const chaosRotation = chaosSpeed * doc.spinSpeed;
+          const openRotation = doc.openSpeed * speedMultiplier;
+
+          const currentRotation = chaosRotation * (1 - this.intensity) + openRotation * this.intensity;
+          doc.angle += currentRotation;
+
+          const chaosRadius = 10 + Math.sin(this.time * 0.03 + i) * 14 + Math.cos(this.time * 0.05 * doc.spinSpeed + i * 2) * 11;
+          const targetRadius = chaosRadius * (1 - this.intensity) + doc.openRadius * this.intensity;
+          doc.radius += (targetRadius - doc.radius) * 0.15 * speedMultiplier;
+
+          const x = this.centerX + Math.cos(doc.angle) * doc.radius;
+          const y = this.centerY + Math.sin(doc.angle) * doc.radius;
+
+          const alpha = doc.chaosAlpha * (1 - this.intensity) + doc.openAlpha * this.intensity;
+
+          const chaosScale = doc.scale;
+          const openScale = 1.05;
+          const scale = chaosScale + (openScale - chaosScale) * this.intensity;
+
+          const chaosDocRotation = doc.angle * doc.spinSpeed;
+          const tangentRotation = doc.angle + Math.PI / 2;
+          const docRotation = chaosDocRotation + (tangentRotation - chaosDocRotation) * this.intensity;
+
+          this.drawDocument(x, y, docRotation, alpha, scale);
+        }
+
+        this.time += speedMultiplier;
+        requestAnimationFrame(() => this.animate());
+      }
+    }
+
+    new MiniPortal(document.getElementById('portal'));
+  </script>
+</body>
+</html>
