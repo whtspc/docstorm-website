@@ -112,6 +112,38 @@
       border-color: #ddd;
     }
 
+    /* Hamburger Menu */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      z-index: 101;
+    }
+
+    .hamburger span {
+      width: 24px;
+      height: 2px;
+      background: var(--text-primary);
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
     /* Hero Section */
     .hero {
       min-height: 100vh;
@@ -412,8 +444,40 @@
         padding: 14px 20px;
       }
 
+      .hamburger {
+        display: flex;
+      }
+
       .nav-links {
-        display: none;
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(12px);
+        flex-direction: column;
+        padding: 80px 32px 32px;
+        gap: 24px;
+        transition: right 0.3s ease;
+        border-left: 1px solid var(--border);
+        box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
+      }
+
+      .nav-links.active {
+        right: 0;
+      }
+
+      .nav-links a {
+        font-size: 16px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .nav-links .btn {
+        width: 100%;
+        padding: 14px 20px;
+        margin-top: 8px;
       }
 
       .hero {
@@ -452,7 +516,12 @@
   <!-- Navigation -->
   <nav>
     <a href="#" class="logo">DocStorm</a>
-    <div class="nav-links">
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
       <a href="#features">Features</a>
       <a href="#how-it-works">How it works</a>
       <a href="#" class="btn btn-primary">Get Started</a>
@@ -951,6 +1020,25 @@
     }
 
     new MiniPortal(document.getElementById('portal'));
+  </script>
+
+  <!-- Mobile Menu Toggle Script -->
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      navLinks.classList.toggle('active');
+    });
+
+    // Close menu when clicking on a link
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navLinks.classList.remove('active');
+      });
+    });
   </script>
 </body>
 </html>
