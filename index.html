@@ -16,12 +16,15 @@
     }
 
     :root {
-      --text-primary: #191919;
-      --text-secondary: #5a5a5a;
-      --text-tertiary: #8a8a8a;
+      --primary: #1e3a5f;
+      --accent: #00b5ad;
+      --accent-light: #00d4c8;
+      --text-primary: #1e3a5f;
+      --text-secondary: #4a6785;
+      --text-tertiary: #7a93a9;
       --bg-primary: #ffffff;
-      --bg-secondary: #fafafa;
-      --border: #ebebeb;
+      --bg-secondary: #f5f9fc;
+      --border: #d8e4ed;
     }
 
     html {
@@ -53,11 +56,14 @@
     }
 
     .logo {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      color: var(--text-primary);
+      display: flex;
+      align-items: center;
       text-decoration: none;
+    }
+
+    .logo img {
+      height: 36px;
+      width: auto;
     }
 
     .nav-links {
@@ -93,23 +99,23 @@
     }
 
     .btn-primary {
-      background: var(--text-primary);
+      background: var(--accent);
       color: white;
     }
 
     .btn-primary:hover {
-      background: #333;
+      background: var(--accent-light);
     }
 
     .btn-secondary {
       background: transparent;
-      color: var(--text-primary);
-      border: 1px solid var(--border);
+      color: var(--primary);
+      border: 1px solid var(--primary);
     }
 
     .btn-secondary:hover {
-      background: var(--bg-secondary);
-      border-color: #ddd;
+      background: var(--primary);
+      color: white;
     }
 
     /* Hamburger Menu */
@@ -258,7 +264,7 @@
 
     /* Business Value Propositions Section */
     .demo {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background: linear-gradient(135deg, #e8f4f8 0%, #d0e8ed 100%);
     }
 
     .demo-header {
@@ -302,7 +308,7 @@
       justify-content: center;
       width: 40px;
       height: 40px;
-      background: linear-gradient(135deg, var(--text-primary) 0%, #444 100%);
+      background: linear-gradient(135deg, var(--primary) 0%, #2d5a8a 100%);
       color: white;
       border-radius: 10px;
       font-size: 20px;
@@ -345,12 +351,13 @@
     .feature-icon {
       width: 44px;
       height: 44px;
-      background: var(--bg-secondary);
+      background: rgba(0, 181, 173, 0.1);
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 20px;
+      color: var(--accent);
     }
 
     .feature-card h3 {
@@ -379,7 +386,7 @@
     .step-number {
       width: 48px;
       height: 48px;
-      background: var(--text-primary);
+      background: var(--accent);
       color: white;
       border-radius: 50%;
       display: flex;
@@ -427,7 +434,7 @@
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: var(--text-tertiary);
+      color: var(--accent);
       margin-bottom: 6px;
     }
 
@@ -480,10 +487,9 @@
       gap: 24px;
     }
 
-    .footer-logo {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-primary);
+    .footer-logo img {
+      height: 32px;
+      width: auto;
     }
 
     .footer-links {
@@ -588,7 +594,7 @@
 <body>
   <!-- Navigation -->
   <nav>
-    <a href="#" class="logo">DocStorm</a>
+    <a href="#" class="logo"><img src="logo-text.png" alt="DocStorm"></a>
     <button class="hamburger" id="hamburger" aria-label="Toggle menu">
       <span></span>
       <span></span>
@@ -859,7 +865,7 @@
   <!-- Footer -->
   <footer>
     <div class="footer-content">
-      <div class="footer-logo">DocStorm</div>
+      <div class="footer-logo"><img src="logo-text.png" alt="DocStorm"></div>
       <div class="footer-links">
         <a href="#">AppExchange</a>
         <a href="#">Documentation</a>
@@ -992,7 +998,7 @@
         ctx.lineTo(-w/2, h/2);
         ctx.closePath();
 
-        ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+        ctx.fillStyle = `rgba(30, 58, 95, ${alpha})`;
         ctx.fill();
 
         ctx.beginPath();
@@ -1000,7 +1006,7 @@
         ctx.lineTo(w/2 - fold, -h/2 + fold);
         ctx.lineTo(w/2, -h/2 + fold);
         ctx.closePath();
-        ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.5})`;
+        ctx.fillStyle = `rgba(0, 181, 173, ${alpha * 0.7})`;
         ctx.fill();
 
         ctx.restore();
@@ -1034,7 +1040,7 @@
           if (line.alpha > 0.01) {
             ctx.beginPath();
             ctx.arc(this.centerX, this.centerY, line.radius, line.angle, line.angle + line.length);
-            ctx.strokeStyle = `rgba(0, 0, 0, ${line.alpha * this.intensity})`;
+            ctx.strokeStyle = `rgba(30, 58, 95, ${line.alpha * this.intensity})`;
             ctx.lineWidth = line.thickness;
             ctx.lineCap = 'round';
             ctx.stroke();
@@ -1061,7 +1067,7 @@
 
           ctx.beginPath();
           ctx.arc(x, y, size, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+          ctx.fillStyle = `rgba(0, 181, 173, ${alpha})`;
           ctx.fill();
         }
       }
