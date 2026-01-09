@@ -5,6 +5,7 @@
  */
 
 import { FileBrowser } from './file-browser.js';
+import { FilePreview } from './file-preview.js';
 import { DocumentCard } from './document-card.js';
 import { DropZone } from './drop-zone.js';
 import { RecordGrid } from './record-grid.js';
@@ -13,6 +14,9 @@ import { SfRecordPage } from './sf-record-page.js';
 // Register child components
 if (!customElements.get('docstorm-file-browser')) {
   customElements.define('docstorm-file-browser', FileBrowser);
+}
+if (!customElements.get('docstorm-file-preview')) {
+  customElements.define('docstorm-file-preview', FilePreview);
 }
 if (!customElements.get('docstorm-document-card')) {
   customElements.define('docstorm-document-card', DocumentCard);
@@ -90,12 +94,12 @@ export class DemoContainer extends HTMLElement {
         padding: 24px;
       }
 
-      /* Input phase: File browser + Drop zone side by side */
+      /* Input phase: Preview + File browser + Drop zone side by side */
       .demo__input-phase {
         display: flex;
-        align-items: center;
+        align-items: stretch;
         justify-content: center;
-        gap: 40px;
+        gap: 24px;
         width: 100%;
         transition: opacity 0.4s ease, transform 0.4s ease;
       }
@@ -107,10 +111,16 @@ export class DemoContainer extends HTMLElement {
         position: absolute;
       }
 
+      /* Preview wrapper */
+      .demo__preview-wrapper {
+        flex: 0 0 auto;
+        display: flex;
+      }
+
       /* File browser wrapper */
       .demo__file-browser-wrapper {
         flex: 0 0 auto;
-        min-width: 520px;
+        display: flex;
       }
 
       /* Drop zone wrapper */
@@ -343,9 +353,14 @@ export class DemoContainer extends HTMLElement {
       <style>${this._getStyles()}</style>
       <div class="demo">
         <div class="demo__content">
-          <!-- Input Phase: File Browser + Drop Zone side by side -->
+          <!-- Input Phase: Preview + File Browser + Drop Zone side by side -->
           <div class="demo__input-phase ${inputPhaseClass}">
-            <!-- File Browser (includes preview pane) -->
+            <!-- Preview Pane -->
+            <div class="demo__preview-wrapper">
+              <docstorm-file-preview></docstorm-file-preview>
+            </div>
+
+            <!-- File Browser -->
             <div class="demo__file-browser-wrapper">
               <docstorm-file-browser></docstorm-file-browser>
             </div>
@@ -389,7 +404,7 @@ export class DemoContainer extends HTMLElement {
 
     this._rendered = true;
 
-    // Set file browser data
+    // Set file browser and preview data
     requestAnimationFrame(() => {
       const fileBrowser = this.shadowRoot.querySelector('docstorm-file-browser');
       if (fileBrowser) {
@@ -397,6 +412,11 @@ export class DemoContainer extends HTMLElement {
         if (this._selectedFile) {
           fileBrowser.selectedId = this._selectedFile.id;
         }
+      }
+
+      const filePreview = this.shadowRoot.querySelector('docstorm-file-preview');
+      if (filePreview) {
+        filePreview.file = this._selectedFile;
       }
 
       // Set record data if showing approval
@@ -426,10 +446,16 @@ export class DemoContainer extends HTMLElement {
   }
 
   _setupEventListeners() {
-    // File selected - just track internally, file browser handles its own preview
+    // File selected - update preview component
     this.shadowRoot.addEventListener('file-selected', (e) => {
       this._selectedFile = e.detail.file;
       this._updateCaption();
+
+      // Update the preview component
+      const filePreview = this.shadowRoot.querySelector('docstorm-file-preview');
+      if (filePreview) {
+        filePreview.file = this._selectedFile;
+      }
     });
 
     // File drag start

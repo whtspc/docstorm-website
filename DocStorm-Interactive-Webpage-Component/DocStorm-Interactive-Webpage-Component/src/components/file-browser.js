@@ -66,15 +66,20 @@ export class FileBrowser extends HTMLElement {
       @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
 
       :host {
-        display: block;
+        display: flex;
         font-family: 'Lexend', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         padding: 8px;
+        height: 100%;
+        box-sizing: border-box;
       }
 
       .file-browser {
         position: relative;
         background: #fff;
         overflow: visible;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
       }
 
       .file-browser__borders {
@@ -104,77 +109,16 @@ export class FileBrowser extends HTMLElement {
       .file-browser__content {
         position: relative;
         z-index: 1;
-        display: flex;
-        gap: 16px;
         padding: 16px;
       }
 
-      /* Preview pane - left side */
-      .file-browser__preview {
-        flex: 0 0 140px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        padding: 12px;
-      }
-
-      .file-browser__preview-image {
-        max-width: 100%;
-        max-height: 160px;
-        object-fit: contain;
-        border-radius: 2px;
-      }
-
-      .file-browser__preview-icon {
-        font-size: 56px;
-        color: #666;
-        margin-bottom: 12px;
-      }
-
-      .file-browser__preview-label {
-        font-size: 13px;
-        font-weight: 500;
-        color: #333;
-        text-align: center;
-        margin-top: 12px;
-      }
-
-      .file-browser__preview-filename {
-        font-size: 11px;
-        color: #888;
-        font-family: 'Consolas', monospace;
-        text-align: center;
-        word-break: break-all;
-        margin-top: 4px;
-      }
-
-      .file-browser__preview-placeholder {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 140px;
-        color: #ccc;
-      }
-
-      .file-browser__preview-placeholder-icon {
-        font-size: 48px;
-        margin-bottom: 12px;
-      }
-
-      .file-browser__preview-placeholder-text {
-        font-size: 12px;
-      }
-
-      /* File grid - right side */
+      /* File grid - 3 files per row */
       .file-browser__grid {
-        flex: 1;
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
         align-content: start;
-        max-width: 400px; /* ~5 files per row (5*72px + 4*8px gaps) */
+        max-width: 268px; /* 3 files (3×84px with padding) + 2 gaps (2×8px) */
       }
 
       .file-item {
@@ -265,32 +209,6 @@ export class FileBrowser extends HTMLElement {
   }
 
   _render() {
-    // Generate preview HTML
-    let previewHTML = '';
-    if (this._selectedFile) {
-      if (this._selectedFile.previewSrc) {
-        previewHTML = `
-          <img class="file-browser__preview-image" src="${this._selectedFile.previewSrc}" alt="${this._selectedFile.label}" />
-          <div class="file-browser__preview-label">${this._selectedFile.label}</div>
-          <div class="file-browser__preview-filename">${this._selectedFile.filename}</div>
-        `;
-      } else {
-        const iconClass = this._getIconClass(this._selectedFile.type);
-        previewHTML = `
-          <i class="file-browser__preview-icon ${iconClass}"></i>
-          <div class="file-browser__preview-label">${this._selectedFile.label}</div>
-          <div class="file-browser__preview-filename">${this._selectedFile.filename}</div>
-        `;
-      }
-    } else {
-      previewHTML = `
-        <div class="file-browser__preview-placeholder">
-          <i class="file-browser__preview-placeholder-icon fa-solid fa-file"></i>
-          <span class="file-browser__preview-placeholder-text">Select a file</span>
-        </div>
-      `;
-    }
-
     // Generate files grid HTML
     const filesHTML = this._files.map(file => {
       const isSelected = file.id === this._selectedFile?.id;
@@ -321,9 +239,6 @@ export class FileBrowser extends HTMLElement {
           <span>File Explorer</span>
         </div>
         <div class="file-browser__content">
-          <div class="file-browser__preview">
-            ${previewHTML}
-          </div>
           <div class="file-browser__grid">
             ${filesHTML || '<div class="file-browser__empty">No files</div>'}
           </div>
