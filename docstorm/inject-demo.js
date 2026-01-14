@@ -134,19 +134,32 @@ function injectDemoButtons() {
   while ((node = walker.nextNode())) {
     const text = node.textContent?.trim().toLowerCase() || '';
     if (text.includes('request a demo')) {
-      // Find the clickable parent (a, button, or element with role="button")
+      // Find the clickable parent
       let parent = node.parentElement;
-      while (parent) {
+      let clickTarget = null;
+
+      while (parent && parent !== document.body) {
         const tagName = parent.tagName.toLowerCase();
         const role = parent.getAttribute('role');
 
+        // Standard clickable elements
         if (tagName === 'a' || tagName === 'button' || role === 'button' || role === 'link') {
-          if (!buttonsFound.includes(parent)) {
-            buttonsFound.push(parent);
-          }
+          clickTarget = parent;
           break;
         }
+
+        // Canva-style: div with inline transform style (positioned button container)
+        // Look for the outermost positioned div that contains the button
+        if (tagName === 'div' && parent.style.transform && parent.style.width) {
+          clickTarget = parent;
+          // Keep walking up to find the outermost positioned container
+        }
+
         parent = parent.parentElement;
+      }
+
+      if (clickTarget && !buttonsFound.includes(clickTarget)) {
+        buttonsFound.push(clickTarget);
       }
     }
   }
