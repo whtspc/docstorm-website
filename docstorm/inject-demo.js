@@ -115,74 +115,61 @@ async function injectDemo() {
 }
 
 /**
- * Find and inject mailto links on all "Request a Demo" buttons
+ * Set up mailto links for all CTA buttons using event delegation
+ * This catches clicks on buttons regardless of when they're rendered
  */
 function injectDemoButtons() {
   const mailto = 'mailto:info@docstorm.eu';
+  const buttonTexts = ['request a demo', 'get early access'];
 
-  // Search for all elements containing "request a demo" text
-  const walker = document.createTreeWalker(
-    document.body,
-    NodeFilter.SHOW_TEXT,
-    null,
-    false
-  );
+  // Use event delegation on document body to catch all clicks
+  document.body.addEventListener('click', (e) => {
+    // Check if the click target or any of its parents contains our button text
+    let target = e.target;
 
-  const buttonsFound = [];
-  let node;
+    while (target && target !== document.body) {
+      const text = target.textContent?.trim().toLowerCase() || '';
 
-  while ((node = walker.nextNode())) {
-    const text = node.textContent?.trim().toLowerCase() || '';
-    if (text.includes('request a demo')) {
-      // Find the clickable parent
-      let parent = node.parentElement;
-      let clickTarget = null;
+      // Check if this element contains one of our button texts
+      const isCtaButton = buttonTexts.some(btnText => text.includes(btnText));
 
-      while (parent && parent !== document.body) {
-        const tagName = parent.tagName.toLowerCase();
-        const role = parent.getAttribute('role');
-
-        // Standard clickable elements
-        if (tagName === 'a' || tagName === 'button' || role === 'button' || role === 'link') {
-          clickTarget = parent;
-          break;
+      if (isCtaButton) {
+        // Make sure it's a reasonably sized button (not the whole page)
+        const rect = target.getBoundingClientRect();
+        if (rect.width < 400 && rect.height < 150) {
+          console.log('[DocStorm] CTA button clicked:', target);
+          e.preventDefault();
+          e.stopPropagation();
+          window.location.href = mailto;
+          return;
         }
-
-        // Canva-style: div with inline transform style (positioned button container)
-        // Look for the outermost positioned div that contains the button
-        if (tagName === 'div' && parent.style.transform && parent.style.width) {
-          clickTarget = parent;
-          // Keep walking up to find the outermost positioned container
-        }
-
-        parent = parent.parentElement;
       }
 
-      if (clickTarget && !buttonsFound.includes(clickTarget)) {
-        buttonsFound.push(clickTarget);
+      target = target.parentElement;
+    }
+  }, true); // Use capture phase to intercept before Canva's handlers
+
+  // Add mouseover handler to show pointer cursor on CTA buttons
+  document.body.addEventListener('mouseover', (e) => {
+    let target = e.target;
+
+    while (target && target !== document.body) {
+      const text = target.textContent?.trim().toLowerCase() || '';
+      const isCtaButton = buttonTexts.some(btnText => text.includes(btnText));
+
+      if (isCtaButton) {
+        const rect = target.getBoundingClientRect();
+        if (rect.width < 400 && rect.height < 150) {
+          target.style.cursor = 'pointer';
+          return;
+        }
       }
+
+      target = target.parentElement;
     }
-  }
+  }, true);
 
-  // Inject mailto behavior on each button
-  buttonsFound.forEach((btn, index) => {
-    console.log(`[DocStorm] Found "Request a Demo" button ${index + 1}:`, btn);
-
-    if (btn.tagName.toLowerCase() === 'a') {
-      // For anchor tags, set the href directly
-      btn.href = mailto;
-    } else {
-      // For buttons/divs, add a click handler
-      btn.style.cursor = 'pointer';
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        window.location.href = mailto;
-      });
-    }
-  });
-
-  console.log(`[DocStorm] Injected mailto on ${buttonsFound.length} "Request a Demo" buttons`);
+  console.log('[DocStorm] CTA button click handler installed');
 }
 
 /**
