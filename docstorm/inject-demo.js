@@ -115,15 +115,77 @@ async function injectDemo() {
 }
 
 /**
+ * Find and inject mailto links on all "Request a Demo" buttons
+ */
+function injectDemoButtons() {
+  const mailto = 'mailto:info@docstorm.eu';
+
+  // Search for all elements containing "request a demo" text
+  const walker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT,
+    null,
+    false
+  );
+
+  const buttonsFound = [];
+  let node;
+
+  while ((node = walker.nextNode())) {
+    const text = node.textContent?.trim().toLowerCase() || '';
+    if (text.includes('request a demo')) {
+      // Find the clickable parent (a, button, or element with role="button")
+      let parent = node.parentElement;
+      while (parent) {
+        const tagName = parent.tagName.toLowerCase();
+        const role = parent.getAttribute('role');
+
+        if (tagName === 'a' || tagName === 'button' || role === 'button' || role === 'link') {
+          if (!buttonsFound.includes(parent)) {
+            buttonsFound.push(parent);
+          }
+          break;
+        }
+        parent = parent.parentElement;
+      }
+    }
+  }
+
+  // Inject mailto behavior on each button
+  buttonsFound.forEach((btn, index) => {
+    console.log(`[DocStorm] Found "Request a Demo" button ${index + 1}:`, btn);
+
+    if (btn.tagName.toLowerCase() === 'a') {
+      // For anchor tags, set the href directly
+      btn.href = mailto;
+    } else {
+      // For buttons/divs, add a click handler
+      btn.style.cursor = 'pointer';
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.location.href = mailto;
+      });
+    }
+  });
+
+  console.log(`[DocStorm] Injected mailto on ${buttonsFound.length} "Request a Demo" buttons`);
+}
+
+/**
  * Start injection when DOM is ready
  */
 function init() {
   const delay = 2000; // Delay for Canva to render
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => setTimeout(injectDemo, delay));
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(injectDemo, delay);
+      setTimeout(injectDemoButtons, delay);
+    });
   } else {
     setTimeout(injectDemo, delay);
+    setTimeout(injectDemoButtons, delay);
   }
 }
 

@@ -459,7 +459,7 @@ export class DemoContainer extends HTMLElement {
 
       <!-- Footer: Request a Demo button -->
       <div class="demo-footer">
-        <a href="#contact" class="demo-footer__btn">request a demo</a>
+        <a href="mailto:info@docstorm.eu" class="demo-footer__btn">request a demo</a>
       </div>
     `;
 
