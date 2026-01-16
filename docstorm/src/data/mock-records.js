@@ -232,7 +232,7 @@ export const expenseData = {
   recordType: 'Expense',
   icon: 'document',
   fields: [
-    { label: 'Merchant', value: 'Starbucks #4521', type: 'text' },
+    { label: 'Merchant', value: 'Brew Haven #4521', type: 'text' },
     { label: 'Category', value: 'Meals & Entertainment', type: 'text' },
     { label: 'Date', value: '2024-12-19', type: 'date' },
     { label: 'Payment Method', value: 'Corporate Visa *4832', type: 'text' },
@@ -240,7 +240,7 @@ export const expenseData = {
     { label: 'Status', value: 'Pending Approval', type: 'text' }
   ],
   recordPageMeta: {
-    recordName: 'Starbucks #4521',
+    recordName: 'Brew Haven #4521',
     status: 'Pending Approval',
     statusVariant: 'warning'
   },
@@ -462,9 +462,9 @@ export const demoFiles = [
   {
     id: 'receipt-1',
     type: 'image',
-    filename: 'receipt-starbucks.jpg',
+    filename: 'receipt-brewhaven.jpg',
     label: 'Coffee Receipt',
-    previewSrc: assetBasePath + 'starbucks.png',
+    previewSrc: assetBasePath + 'brewhaven.png',
     record: expenseData,
     processingSteps: [
       'Scanning receipt...',
